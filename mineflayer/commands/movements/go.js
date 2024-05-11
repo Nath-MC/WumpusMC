@@ -4,7 +4,7 @@ const { updateGoal } = require("../../Client");
 
 module.exports = {
   name: "go",
-  description : "Make the bot go at given coordinates or the specified player's ones",
+  description : "Move the bot from point A to point B.",
   args: "<xyz | Player's username>",
 
   /**

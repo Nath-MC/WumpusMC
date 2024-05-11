@@ -1,5 +1,6 @@
 const mineflayer = require("mineflayer");
 const mc_protocol = require("minecraft-protocol");
+const {whisperCommand} = require("../data.json");
 const { initEventListener } = require("./EventListener");
 const {
   pathfinder,
@@ -10,7 +11,6 @@ const CommandHandler = require("./CommandsHandler");
 const pvp = require("mineflayer-pvp").plugin;
 const pvpArmorManager = require("mineflayer-armor-manager");
 const HawkEye = require("minecrafthawkeye");
-const {headless} = require("prismarine-viewer");
 var client;
 
 /**
@@ -107,11 +107,6 @@ function connectClient(hostIp, hostPort, botName) {
               return reject(reason);
             });
 
-            // client.on("playerCollect", (collector, collected) => {
-            //   if (collector !== client.player.entity) return;
-
-            //   if (collected.id === client.registry.)
-            // })
           } catch (error) {
             console.warn(
               `Something wrong happened during the bot's initialization :\n${error}`
@@ -121,8 +116,13 @@ function connectClient(hostIp, hostPort, botName) {
         },
         (reason) => {
           if (reason.message.includes("ETIMEDOUT"))
-            reason = "The host did not respond";
+            reason = "The host did not respond.";
+
+          if (reason.code == "ECONNREFUSED")
+            reason = "The connection has been refused : the server may be down or offline.";
+
           console.warn(`${hostIp}:${hostPort} state :\n${reason}`);
+
           return reject(reason); //Either the Minecraft server was not one(or offline) or the ip refers to nothing
         }
       );
@@ -157,7 +157,7 @@ function deconnectClient(client) {
 
 function message(client, message, player) {
   if (!player) return client.chat(message);
-  return client.chat(`/msg ${player} ${message}`);
+  return client.chat(`${whisperCommand} ${player} ${message}`);
 }
 
 /**

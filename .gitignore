@@ -12,6 +12,9 @@ yarn-error.log*
 lerna-debug.log*
 .pnpm-debug.log*
 
+### VS Code ###
+.vscode/
+
 # Private identifers
 data.json
 

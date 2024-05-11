@@ -1,0 +1,6 @@
+
+{
+  "token": "Your Discord App token here",
+  "client": "Your Discord Bot (and user?) ID here",
+  "whisperCommand" : "The whispering command you want to use to replace the default /msg or /minecraft:msg one"
+}

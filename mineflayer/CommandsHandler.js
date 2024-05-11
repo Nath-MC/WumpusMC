@@ -8,6 +8,7 @@ const path = require("node:path");
  */
 
 module.exports = (client) => {
+
   const { message: reply } = require("./Client");
   console.log("Initializing the in-game commands handler");
 
@@ -38,24 +39,53 @@ module.exports = (client) => {
 
   const messageHandler = (username, message, translate, jsonMsg) => {
 
-    if (!message.startsWith("$") || username == client.username) return;
+    const PREFIX = '$';
+
+    if (!message.startsWith(PREFIX) || username == client.username) return;
 
     const command = message.trim().split(" ", 4)[0].slice(1).toLowerCase();
     let args = message.trim().split(" ");
     args.shift(); //Removing the first object as it is the command
 
-    if (!commands.has(command))
-      return reply(client, "Unknown command !", username); //Command not existing
+    if (command === "help") {
+      if (!args[0]) {
 
-    if (!args[args.length - 1]) {
+        reply(client, "Here a list of all commands :", username);
+
+        let commandsName = [];
+
+        for (const command of commands) { 
+          commandsName.push(command[0]) //Grab all commands and returns their name
+         }
+    
+         console.log(commandsName);
+         reply(client, `${commandsName.join(", ")}`, username);
+         return reply(client, `Try using ${PREFIX}help <command> to get help about that command`, username);
+
+      } else if (commands.has(args[0])) {
+
+        reply(client, `${PREFIX}${args[0]} : ${commands.get(args[0])[0]}`, username); //Get the command description
+        return reply(client, `${PREFIX}${args[0]} arguments : ${commands.get(args[0])[1]}`, username); //Get the command args
+
+      }
+
+    }
+
+    if (!commands.has(command)) {  //Command not existing
+     reply(client, "Unknown command ! Here a list of all available commands :", username);
+    }
+       
+
+    if (!args[args.length - 1]) { //No args
       if (command !== "position")
-        //No args
+      
         return reply(
           client,
-          `Usage : $${command} ${commands.get(command)[1]}`,
+          `Usage : $${command} ${commands.get(command)[1]}`, //Explaining the syntax of the command
           username
-        ); //Explaining the syntax of the command
+        ); 
     }
+    
     console.log(`${username} : ${message}`);
 
     commands.get(command)[2](client, args, [
