@@ -7,11 +7,11 @@ const {
   Movements,
   goals: { GoalBlock },
 } = require("mineflayer-pathfinder");
-const CommandHandler = require("./CommandsHandler");
+const CommandHandler = require("./CommandHandler");
 const pvp = require("mineflayer-pvp").plugin;
 const pvpArmorManager = require("mineflayer-armor-manager");
 const HawkEye = require("minecrafthawkeye");
-var client;
+let client;
 
 /**
  *
@@ -24,6 +24,7 @@ function pluginLoader(client) {
   console.log("Initializing pathfinder plugin");
   client.loadPlugin(pathfinder);
   const defaultMove = new Movements(client);
+
   defaultMove.scafoldingBlocks.push(
     client.registry.itemsByName["netherrack"].id
   );
@@ -33,6 +34,7 @@ function pluginLoader(client) {
   defaultMove.canOpenDoors = true;
   defaultMove.allowFreeMotion = true;
   client.pathfinder.thinkTimeout = 10 * 1000;
+
   client.pathfinder.setMovements(defaultMove);
 
   //Loading pvp plugins
@@ -70,8 +72,9 @@ function connectClient(hostIp, hostPort, botName) {
             client = mineflayer.createBot({
               host: hostIp.toLowerCase(),
               port: hostPort,
-              username: botName,
+              username: botName || "WumpusMC",
               checkTimeoutInterval: 120 * 1000,
+              brand : "WumpusMC"
               // For now, the project don't support microsoft-based connections
             });
 
@@ -94,36 +97,30 @@ function connectClient(hostIp, hostPort, botName) {
               return resolve(client); //The player entity is loaded in the world
             });
 
-            client.on("kicked", (reason, loggedIn) => {
-              if (!reason) return reject(reason);
-              console.log(reason);
+            client.on("kicked", (reason) => {
+              if (!reason) return reject("No reason were passed");
+
               if (reason.value.translate.value.includes("multiplayer.disconnect.unverified_username"))
                 reason = "You can not connect to online servers !";
-              console.warn(
-                !loggedIn
-                  ? `${botName} has been kicked out during the login phase :\n${reason}`
-                  : null //Shouldn't happen if the event listener had been called via "spawn" event
-              );
+
               return reject(reason);
             });
 
           } catch (error) {
-            console.warn(
-              `Something wrong happened during the bot's initialization :\n${error}`
-            );
+            console.warn(`Something wrong happened during the bot's initialization :\n${error}`);
             return reject(error); //Unexpected error (e.g. ECONRESET) The user should try again
           }
         },
-        (reason) => {
-          if (reason.message.includes("ETIMEDOUT"))
-            reason = "The host did not respond.";
+        (reason) => { //Either the Minecraft server was not one (or offline) or the ip refers to nothing
+          if (reason.code === "ETIMEDOUT") {
+            return reject("Connection timed out, the host may not have responded.")
+          }
 
-          if (reason.code == "ECONNREFUSED")
-            reason = "The connection has been refused : the server may be down or offline.";
+          if (reason.code === "ECONNREFUSED") {
+            return reject("The connection has been refused, the server may be down or offline.");
+          }
 
-          console.warn(`${hostIp}:${hostPort} state :\n${reason}`);
-
-          return reject(reason); //Either the Minecraft server was not one(or offline) or the ip refers to nothing
+          return reject(reason.code); 
         }
       );
   });

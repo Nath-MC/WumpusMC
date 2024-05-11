@@ -10,7 +10,7 @@ const path = require("node:path");
 module.exports = (client) => {
 
   const { message: reply } = require("./Client");
-  console.log("Initializing the in-game commands handler");
+  console.log("Initializing the in-game command handler");
 
   const foldersPath = path.join(__dirname, "commands");
   const commandFolder = fs.readdirSync(foldersPath);

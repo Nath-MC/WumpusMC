@@ -4,16 +4,16 @@ const {
   EmbedBuilder,
 } = require("discord.js");
 const { connectClient } = require("../../../mineflayer/Client");
+const UserRegister = require("../../../mineflayer/UserRegister");
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("login")
-    .setDescription("Login into the MC server as a player")
+    .setName("create")
+    .setDescription("Create a new bot in the specified server")
     .addStringOption((args) =>
       args
         .setName("username")
         .setDescription("Bot's username")
-        .setRequired(true)
     )
     .addStringOption((args) =>
       args.setName("ip").setDescription("The server's ip").setRequired(true)
@@ -50,7 +50,9 @@ module.exports = {
       });
     }
 
-    if (interaction.client.botUsers.has(interaction.user.id)) {
+    //Checking if the user had already started another bot
+    if (UserRegister.has(interaction.user.id)) {
+
       return interaction.editReply({
         embeds: [
           new EmbedBuilder()
@@ -58,7 +60,9 @@ module.exports = {
             .setColor([255, 0, 0]),
         ],
       });
+
     } else {
+
       interaction.editReply({
         embeds: [
           new EmbedBuilder()
@@ -66,28 +70,32 @@ module.exports = {
             .setColor([255, 255, 0]),
         ],
       });
-    }
 
-    connectClient(hostIp, hostPort, username)
-      .then(async (client) => {
-        await interaction.client.botUsers.set(interaction.user.id, client);
-        interaction.editReply({
-          embeds: [
-            new EmbedBuilder()
-              .setTitle(`${username} joined the game`)
-              .setColor([0, 255, 0]),
-          ],
+      connectClient(hostIp, hostPort, username)
+        .then(async (client) => {
+          UserRegister.set(interaction.user.id, client);
+  
+          interaction.editReply({
+            embeds: [
+              new EmbedBuilder()
+                .setTitle(`${username} joined the game`)
+                .setColor([0, 255, 0]),
+            ],
+          });
+  
+        })
+        .catch((reason) => {
+  
+          interaction.editReply({
+            embeds: [
+              new EmbedBuilder()
+                .setTitle("Something wrong happended !")
+                .setDescription(`\`\`\`\n${reason}\n\`\`\``)
+                .setColor([255, 0, 0]),
+            ],
+          });
+
         });
-      })
-      .catch((reason) => {
-        interaction.editReply({
-          embeds: [
-            new EmbedBuilder()
-              .setTitle("Something wrong happended !")
-              .setDescription(`\`\`\`\n${reason}\n\`\`\``)
-              .setColor([255, 0, 0]),
-          ],
-        });
-      });
+    }
   },
 };
