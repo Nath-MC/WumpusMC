@@ -1,6 +1,6 @@
 const mineflayer = require("mineflayer");
 const mc_protocol = require("minecraft-protocol");
-const {whisperCommand} = require("../data.json");
+const { whisperCommand } = require("../data.json");
 const { initEventListener } = require("./EventListener");
 const {
   pathfinder,
@@ -135,25 +135,6 @@ function connectClient(hostIp, hostPort, botName) {
 
 /**
  *
- * @param {mineflayer.Bot} client The instance to disconnect
- * @returns {Promise<mineflayer.Bot> | Error}
- */
-
-function deconnectClient(client) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      await client.quit();
-      console.log(`${client.username} successfully exited`);
-      return resolve(client); //Successfully exited => Promise fullfilled with client return as mineflayer.Bot
-    } catch (e) {
-      console.warn(e);
-      return reject(e); //e should return an Error Object => Promise rejected
-    }
-  });
-}
-
-/**
- *
  * @param {mineflayer.Bot} client The bot instance
  * @param {String} message The in-game sent message
  * @param {String} player The recipient of the message (If undefined, the message is sent in the chat)
@@ -176,7 +157,6 @@ function message(client, message, player) {
 
 module.exports = {
   connectClient,
-  deconnectClient,
   message,
   updateGoal,
 };

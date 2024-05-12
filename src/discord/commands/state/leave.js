@@ -3,7 +3,6 @@ const {
   CommandInteraction,
   EmbedBuilder,
 } = require("discord.js");
-const { deconnectClient } = require("../../../mineflayer/Client");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -34,7 +33,7 @@ module.exports = {
         ],
       });
 
-      deconnectClient(interaction.client.botUsers.get(interaction.user.id))
+      interaction.client.botUsers.get(interaction.user.id).quit()
         .then((client) => {
           interaction.client.botUsers.delete(interaction.user.id);
           return interaction.editReply({
