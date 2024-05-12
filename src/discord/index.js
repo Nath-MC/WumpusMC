@@ -1,4 +1,4 @@
-console.log("Hi there! Made by Nath_");
+console.log("Hi there! Made by Nath and Majestial");
 
 const { Client, Collection, IntentsBitField } = require("discord.js");
 const { Guilds, GuildMessages, GuildMembers, DirectMessages } = IntentsBitField.Flags;

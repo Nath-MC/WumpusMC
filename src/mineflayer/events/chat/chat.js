@@ -10,9 +10,11 @@ module.exports = {
    * @param {String} username
    * @param {String} message
    */
-  execute(client, username, message) {
-    console.log(`<${username}> ${message}`);
-    if (message.includes(client.username))
-      return sendMessage(client, `Hey ${username} !`);
+  execute(client, username, message, translate, jsonMsg) {
+    if (translate === "<%s> %s") { //Something said publicly in the chat
+      if (message.includes(client.username))
+        return sendMessage(client, `Hey ${username} !`);
+
+    }
   },
 };

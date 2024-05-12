@@ -18,5 +18,5 @@ module.exports = (client) => {
       } else throw new Error(`${filePath} command is missing a property ! (name, description, args, execute)`);
     }
   }
+  console.log(`${client.commands.size} commands were registered`);
 };
-console.log(`${client.commands.size} commands were registered`);

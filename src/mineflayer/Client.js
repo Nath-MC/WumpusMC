@@ -2,7 +2,7 @@
 const mineflayer = require("mineflayer");
 const mc_protocol = require("minecraft-protocol");
 const { whisperCommand } = require("../data.json");
-const { initEventListener } = require("./EventListener");
+const EventListener = require("./EventListener");
 const {
   pathfinder,
   Movements,
@@ -22,8 +22,11 @@ let client;
  */
 
 function pluginLoader(client) {
+
+  console.log("Initializing plugins");
+  
+
   //Loading pathfinder
-  console.log("Initializing pathfinder plugin");
   client.loadPlugin(pathfinder);
   const defaultMove = new Movements(client);
 
@@ -36,8 +39,8 @@ function pluginLoader(client) {
 
   client.pathfinder.setMovements(defaultMove);
 
+
   //Loading pvp plugins
-  console.log("Initializing pvp plugins");
   client.loadPlugin(pvp);
   client.loadPlugin(pvpArmorManager);
   client.loadPlugin(HawkEye.default);
@@ -92,7 +95,7 @@ function connectClient(hostIp, hostPort, botName) {
               // });
 
               //Start a more wide event listener once the bot is ready
-              initEventListener(client);
+              EventListener(client);
 
               //At this point, the player entity is loaded in the world and fully ready
               return resolve(client);
