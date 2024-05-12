@@ -26,7 +26,7 @@ for (const folder of commandFolders) {
   }
 }
 
-console.log(`${SlashCommands.size} were registered.`);
+console.log(`${SlashCommands.size} slash commands were registered.`);
 
 module.exports = SlashCommands;
 

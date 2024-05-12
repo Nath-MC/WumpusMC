@@ -11,12 +11,10 @@ module.exports = {
     .setName("create")
     .setDescription("Create a new bot in the specified server")
     .addStringOption((args) =>
-      args
-        .setName("username")
-        .setDescription("Bot's username")
+      args.setName("ip").setDescription("The server's ip").setRequired(true)
     )
     .addStringOption((args) =>
-      args.setName("ip").setDescription("The server's ip").setRequired(true)
+      args.setName("username").setDescription("Bot's username")
     )
     .addNumberOption((args) =>
       args
@@ -31,7 +29,7 @@ module.exports = {
    */
 
   async execute(interaction) {
-    const username = interaction.options.getString("username");
+    const username = interaction.options.getString("username") || "WumpusMC";
     const hostIp = interaction.options.getString("ip");
     const hostPort = interaction.options.getNumber("port") || 25565;
 
@@ -52,7 +50,6 @@ module.exports = {
 
     //Checking if the user had already started another bot
     if (UserRegister.has(interaction.user.id)) {
-
       return interaction.editReply({
         embeds: [
           new EmbedBuilder()
@@ -60,9 +57,7 @@ module.exports = {
             .setColor([255, 0, 0]),
         ],
       });
-
     } else {
-
       interaction.editReply({
         embeds: [
           new EmbedBuilder()
@@ -74,7 +69,7 @@ module.exports = {
       connectClient(hostIp, hostPort, username)
         .then(async (client) => {
           UserRegister.set(interaction.user.id, client);
-  
+
           interaction.editReply({
             embeds: [
               new EmbedBuilder()
@@ -82,10 +77,8 @@ module.exports = {
                 .setColor([0, 255, 0]),
             ],
           });
-  
         })
         .catch((reason) => {
-  
           interaction.editReply({
             embeds: [
               new EmbedBuilder()
@@ -94,7 +87,6 @@ module.exports = {
                 .setColor([255, 0, 0]),
             ],
           });
-
         });
     }
   },

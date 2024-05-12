@@ -11,6 +11,7 @@ const CommandHandler = require("./CommandHandler");
 const pvp = require("mineflayer-pvp").plugin;
 const pvpArmorManager = require("mineflayer-armor-manager");
 const HawkEye = require("minecrafthawkeye");
+const Viewer = require("prismarine-viewer").mineflayer;
 let client;
 
 /**
@@ -92,6 +93,12 @@ function connectClient(hostIp, hostPort, botName) {
               pluginLoader(client);
 
               client.armorManager.equipAll();
+
+              Viewer(client, {
+                viewDistance : 16,
+                firstPerson : true,
+                port : 80
+              });
 
               initEventListener(client); //Start a more wide event listener once the bot is ready
               return resolve(client); //The player entity is loaded in the world

@@ -2,11 +2,10 @@
 // Made by Nath_
 
 console.log("Hi there !");
-console.log(`Starting project ${__dirname} !`);
 
 
-const { Client, IntentsBitField, Collection } = require("discord.js");
-const { token } = require("../../data.json");
+const { Client, IntentsBitField } = require("discord.js");
+const { token } = require("../data.json");
 const startEventListener = require("./eventListener");
 
 const DiscordClient = new Client({
@@ -29,5 +28,3 @@ DiscordClient.on("ready", (client) => {
   startEventListener(client);
   
 });
-
-client.botUsers = new Collection(); // Use this to access which user ran which bot instance

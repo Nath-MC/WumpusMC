@@ -29,46 +29,18 @@ const rest = new REST().setToken(token);
 
 console.log(`Started refreshing ${commands.length} slash commands.`);
 
-async () => {
-  console.log("Deleting old global commands");
-  rest
-    .put(Routes.applicationCommand(client), {
-      body: [],
-    })
-    .then(
-      (value) => {
-        if (value.length !== commands.length)
-          throw new Error("Not all commands were deleted");
-        console.log("Successfully deleted old global commands");
-      },
-      (reason) => {
-        console.log("Failed to delete old global commands");
-        throw new Error(reason);
-      }
-    );
-
-  setTimeout(() => {
-    rest
-      .put(Routes.applicationCommands(client), {
-        body: commands,
-      })
-      .then(
-        (value) => {
-          if (value.length !== commands.length)
-            throw new Error("Not all commands were refreshed");
-          console.log(`Succesfully updated  ${value.length} slash commands`);
-        },
-        (reason) => {
-          console.log("Failed to refresh slash commands");
-          throw new Error(reason);
-        }
-      );
-  }, 10 * 1000);
-
-  await rest.put(
-    Routes.applicationGuildCommands(client, "1108374933047889970"),
-    {
-      body: [],
+rest
+  .put(Routes.applicationCommands(client), {
+    body: commands,
+  })
+  .then(
+    (value) => {
+      if (value.length !== commands.length)
+        throw new Error("Not all commands were refreshed");
+      console.log(`Succesfully updated  ${value.length} slash commands`);
+    },
+    (reason) => {
+      console.log("Failed to refresh slash commands");
+      throw new Error(reason);
     }
   );
-};

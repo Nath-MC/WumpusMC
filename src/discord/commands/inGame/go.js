@@ -7,8 +7,8 @@ const { updateGoal } = require("../../../mineflayer/Client");
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("goto")
-    .setDescription("Move the bot to the coords or the player's ones")
+    .setName("go")
+    .setDescription("Move the bot to the xyz coords or the player's ones")
     .addStringOption((args) =>
       args.setName("xyz").setDescription("The desired coordinates")
     )

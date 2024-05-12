@@ -3,8 +3,8 @@
   "version": "0.0.1-alpha",
   "main": "src/index.js",
   "scripts": {
-    "launch": "node src/index.js",
-    "deploy": "node src/deploy.js"
+    "launch": "node src/discord/index.js",
+    "deploy": "node src/discord/deploy.js"
   },
   "author": "Nath_",
   "contributors": [
