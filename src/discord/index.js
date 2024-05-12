@@ -1,30 +1,20 @@
-// Hey there !
-// Made by Nath_
+console.log("Hi there! Made by Nath_");
 
-console.log("Hi there !");
-
-
-const { Client, IntentsBitField } = require("discord.js");
+const { Client, Collection, IntentsBitField } = require("discord.js");
+const { Guilds, GuildMessages, GuildMembers, DirectMessages } = IntentsBitField.Flags;
 const { token } = require("../data.json");
-const startEventListener = require("./eventListener");
 
-const DiscordClient = new Client({
-  intents: [
-    IntentsBitField.Flags.Guilds,
-    IntentsBitField.Flags.GuildMessages,
-    IntentsBitField.Flags.GuildMembers,
-    IntentsBitField.Flags.DirectMessages,
-  ],
+const client = new Client({
+  intents: [Guilds, GuildMessages, GuildMembers, DirectMessages],
 });
 
-DiscordClient.login(token);
+console.log("Initializing collections")
+client.commands = new Collection();
+client.botUsers = new Collection();
 
-DiscordClient.on("ready", (client) => {
+console.log("Initializing command and event handlers")
+require("./EventListener")(client);
+require("./CommandHandler")(client);
 
-  console.log(client.user.username + " is up");
-  client.user.setStatus("dnd");
-
-  console.log("Discord Event Listener initializing");
-  startEventListener(client);
-  
-});
+console.log("Logging in...")
+client.login(token);
