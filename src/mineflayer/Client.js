@@ -1,3 +1,4 @@
+//Imports
 const mineflayer = require("mineflayer");
 const mc_protocol = require("minecraft-protocol");
 const { whisperCommand } = require("../data.json");
@@ -11,7 +12,8 @@ const CommandHandler = require("./CommandHandler");
 const pvp = require("mineflayer-pvp").plugin;
 const pvpArmorManager = require("mineflayer-armor-manager");
 const HawkEye = require("minecrafthawkeye");
-const Viewer = require("prismarine-viewer").mineflayer;
+// const Viewer = require("prismarine-viewer").mineflayer;
+
 let client;
 
 /**
@@ -20,18 +22,14 @@ let client;
  */
 
 function pluginLoader(client) {
-
   //Loading pathfinder
   console.log("Initializing pathfinder plugin");
   client.loadPlugin(pathfinder);
   const defaultMove = new Movements(client);
 
-  defaultMove.scafoldingBlocks.push(
-    client.registry.itemsByName["netherrack"].id
-  );
-  defaultMove.scafoldingBlocks.push(
-    client.registry.itemsByName["oak_planks"].id
-  );
+  //Defining movements properties
+  defaultMove.scafoldingBlocks.push(client.registry.itemsByName["netherrack"].id);
+  defaultMove.scafoldingBlocks.push(client.registry.itemsByName["oak_planks"].id);
   defaultMove.canOpenDoors = true;
   defaultMove.allowFreeMotion = true;
   client.pathfinder.thinkTimeout = 10 * 1000;
@@ -41,12 +39,10 @@ function pluginLoader(client) {
   //Loading pvp plugins
   console.log("Initializing pvp plugins");
   client.loadPlugin(pvp);
-  client.pvp.movements = defaultMove;
   client.loadPlugin(pvpArmorManager);
-
-  //HawkEye
   client.loadPlugin(HawkEye.default);
-  
+
+  client.pvp.movements = defaultMove;
 }
 
 /**
@@ -65,9 +61,7 @@ function connectClient(hostIp, hostPort, botName) {
       .then(
         (result) => {
           //SUCCESS
-          console.log(
-            `Ping successfull !\nInitalizing a bot as ${botName} on ${hostIp}:${hostPort} (${result.version.name})`
-          );
+          console.log(`Ping successfull !\nInitalizing a bot as ${botName} on ${hostIp}:${hostPort} (${result.version.name})`);
 
           try {
             client = mineflayer.createBot({
@@ -75,16 +69,13 @@ function connectClient(hostIp, hostPort, botName) {
               port: hostPort,
               username: botName || "WumpusMC",
               checkTimeoutInterval: 120 * 1000,
-              brand : "WumpusMC"
+              brand: "WumpusMC",
               // For now, the project don't support microsoft-based connections
             });
 
-            console.log("Initializing the spawn/end listener");
-
             client.once("spawn", () => {
-              console.info(
-                `${botName} successfully connected on ${hostIp}:${hostPort}`
-              );
+              //Defining the property that will store all commands
+              client.commands = new Map();
 
               //Start listening to commands
               CommandHandler(client);
@@ -94,40 +85,43 @@ function connectClient(hostIp, hostPort, botName) {
 
               client.armorManager.equipAll();
 
-              Viewer(client, {
-                viewDistance : 16,
-                firstPerson : true,
-                port : 80
-              });
+              // Viewer(client, {
+              //   viewDistance : 16,
+              //   firstPerson : true,
+              //   port : 80
+              // });
 
-              initEventListener(client); //Start a more wide event listener once the bot is ready
-              return resolve(client); //The player entity is loaded in the world
+              //Start a more wide event listener once the bot is ready
+              initEventListener(client);
+
+              //At this point, the player entity is loaded in the world and fully ready
+              return resolve(client);
             });
 
             client.on("kicked", (reason) => {
               if (!reason) return reject("No reason were passed");
 
-              if (reason.value.translate.value.includes("multiplayer.disconnect.unverified_username"))
-                reason = "You can not connect to online servers !";
+              if (reason.value.translate.value.includes("multiplayer.disconnect.unverified_username")) reason = "You can not connect to online servers !";
 
               return reject(reason);
             });
-
           } catch (error) {
             console.warn(`Something wrong happened during the bot's initialization :\n${error}`);
             return reject(error); //Unexpected error (e.g. ECONRESET) The user should try again
           }
         },
-        (reason) => { //Either the Minecraft server was not one (or offline) or the ip refers to nothing
+        (reason) => {
+          //Either the Minecraft server was not one (or offline) or the ip refers to nothing
+
           if (reason.code === "ETIMEDOUT") {
-            return reject("Connection timed out, the host may not have responded.")
+            return reject("Connection timed out, the host may not have responded.");
           }
 
           if (reason.code === "ECONNREFUSED") {
             return reject("The connection has been refused, the server may be down or offline.");
           }
 
-          return reject(reason.code); 
+          return reject(reason.code);
         }
       );
   });
@@ -151,7 +145,7 @@ function message(client, message, player) {
  * @param {Number[]} coords The X Y Z goal
  */
 
- function updateGoal(client, coords) {
+function updateGoal(client, coords) {
   client.pathfinder.setGoal(new GoalBlock(coords[0], coords[1], coords[2]));
 }
 
