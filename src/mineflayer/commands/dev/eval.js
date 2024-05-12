@@ -3,8 +3,8 @@ const { message: reply } = require("../../Client");
 
 module.exports = {
   name: "eval",
-  description : "",
-  args : "<Expression to evaluate>",
+  description: "Evaluate a JS expression",
+  args: "<Expression to evaluate>",
 
   /**
    *
@@ -14,20 +14,18 @@ module.exports = {
    */
 
   execute(client, cmdArgs, eventArgs) {
-    const mcdata = require("minecraft-data")(client.version);
-
     if (cmdArgs.length > 1)
       return reply(
         client,
-        "Only one expression can be evaluated at once",
+        "Only one expression can be evaluated at once.",
         eventArgs[0]
       );
 
     try {
-      // Évaluation du code
+      // Evaluate the expression
       let result = eval(cmdArgs[0]);
 
-      // Conversion du résultat en chaîne de caractères
+      // Convert the result to string if it isn't already
       if (typeof result !== "string") {
         result = require("util").inspect(result);
       }
@@ -35,7 +33,7 @@ module.exports = {
       return reply(client, result, eventArgs[0]);
     } catch (err) {
       console.log(err)
-      return reply(client, "Une erreur est survenue: " + err.message, eventArgs[0]);
+      return reply(client, "An error occured: " + err.message, eventArgs[0]);
     }
   },
 };
