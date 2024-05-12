@@ -4,7 +4,6 @@ const {
   EmbedBuilder,
 } = require("discord.js");
 const { connectClient } = require("../../../mineflayer/Client");
-const UserRegister = require("../../../mineflayer/UserRegister");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -49,7 +48,7 @@ module.exports = {
     }
 
     //Checking if the user had already started another bot
-    if (UserRegister.has(interaction.user.id)) {
+    if (interaction.client.botUsers.has(interaction.user.id)) {
       return interaction.editReply({
         embeds: [
           new EmbedBuilder()
@@ -68,7 +67,7 @@ module.exports = {
 
       connectClient(hostIp, hostPort, username)
         .then(async (client) => {
-          UserRegister.set(interaction.user.id, client);
+          interaction.client.botUsers.set(interaction.user.id, client);
 
           interaction.editReply({
             embeds: [

@@ -3,7 +3,6 @@ const {
   CommandInteraction,
   EmbedBuilder,
 } = require("discord.js");
-const UserRegister = require("../../../mineflayer/UserRegister");
 const { deconnectClient } = require("../../../mineflayer/Client");
 
 module.exports = {
@@ -16,10 +15,9 @@ module.exports = {
    */
 
   async execute(interaction) {
-
     await interaction.deferReply({ ephemeral: true });
 
-    if (!UserRegister.has(interaction.user.id)) {
+    if (!interaction.client.botUsers.has(interaction.user.id)) {
       return interaction.editReply({
         embeds: [
           new EmbedBuilder()
@@ -36,7 +34,7 @@ module.exports = {
         ],
       });
 
-      deconnectClient(UserRegister.get(interaction.user.id))
+      deconnectClient(interaction.client.botUsers.get(interaction.user.id))
         .then((client) => {
           interaction.client.botUsers.delete(interaction.user.id);
           return interaction.editReply({
@@ -50,7 +48,7 @@ module.exports = {
           return interaction.editReply({
             embeds: [
               new EmbedBuilder()
-                .setTitle("Something wrong happended !")
+                .setTitle("Something wrong happened !")
                 .setDescription(`\`\`\`\n${reason}\n\`\`\``)
                 .setColor([255, 0, 0]),
             ],
