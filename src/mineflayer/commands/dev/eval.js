@@ -1,5 +1,4 @@
 const mineflayer = require("mineflayer");
-const { message: reply } = require("../../Client");
 
 module.exports = {
   name: "eval",
@@ -15,7 +14,7 @@ module.exports = {
 
   execute(client, cmdArgs, eventArgs) {
     if (cmdArgs.length > 1)
-      return reply(
+      return client.utils.message(client, 
         client,
         "Only one expression can be evaluated at once.",
         eventArgs[0]
@@ -30,10 +29,10 @@ module.exports = {
         result = require("util").inspect(result);
       }
       console.log(result);
-      return reply(client, result, eventArgs[0]);
+      return client.utils.message(client, result, eventArgs[0]);
     } catch (err) {
       console.log(err)
-      return reply(client, "An error occured: " + err.message, eventArgs[0]);
+      return client.utils.message(client, "An error occured: " + err.message, eventArgs[0]);
     }
   },
 };

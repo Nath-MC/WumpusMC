@@ -72,10 +72,16 @@ function connectClient(hostIp, hostPort, botName) {
               port: hostPort,
               username: botName || "WumpusMC",
               checkTimeoutInterval: 120 * 1000,
-              brand: "WumpusMC",
+              brand: "WumpusMC"
               // For now, the project don't support microsoft-based connections
             });
 
+            console.log("Initializing the client utils");
+            client.utils = {
+              message, updateGoal,
+            }
+
+            console.log("Initializing the spawn/end listener");
             client.once("spawn", () => {
               //Defining the property that will store all commands
               client.commands = new Map();
@@ -152,8 +158,4 @@ function updateGoal(client, coords) {
   client.pathfinder.setGoal(new GoalBlock(coords[0], coords[1], coords[2]));
 }
 
-module.exports = {
-  connectClient,
-  message,
-  updateGoal,
-};
+module.exports = connectClient;

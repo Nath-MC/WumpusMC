@@ -14,16 +14,16 @@ module.exports = {
      */
     execute(client, cmdArgs, eventArgs) {
         if (cmdArgs[0] === client.username)
-            return reply(client, "You can't do that !", eventArgs[0]);
+            return client.utils.message(client, "You can't do that !", eventArgs[0]);
 
         if(cmdArgs[0].startsWith("player:")) {
             const recipient = cmdArgs[0].replace("player:", ""); //player:NasoMC => NasoMC
             cmdArgs.shift() ;           
-            return reply(client, cmdArgs.join(" "), recipient);
+            return client.utils.message(client, cmdArgs.join(" "), recipient);
         }
 
         else 
-        return reply(client, cmdArgs.join(" "));
+        return client.utils.message(client, cmdArgs.join(" "));
 
     }
 }

@@ -3,7 +3,7 @@ const {
   CommandInteraction,
   EmbedBuilder,
 } = require("discord.js");
-const { connectClient } = require("../../../mineflayer/Client");
+const connectClient = require("../../../mineflayer/Client");
 
 module.exports = {
   data: new SlashCommandBuilder()
