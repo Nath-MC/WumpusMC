@@ -14,9 +14,10 @@ module.exports = {
    */
 
   async execute(interaction) {
+    let mcClient = interaction.client.botUsers.get(interaction.user.id);
     await interaction.deferReply({ ephemeral: true });
 
-    if (!interaction.client.botUsers.has(interaction.user.id)) {
+    if (!mcClient) {
       return interaction.editReply({
         embeds: [
           new EmbedBuilder()
@@ -32,27 +33,26 @@ module.exports = {
             .setColor([255, 255, 0]),
         ],
       });
-
-      interaction.client.botUsers.get(interaction.user.id).quit()
-        .then((client) => {
-          interaction.client.botUsers.delete(interaction.user.id);
-          return interaction.editReply({
-            embeds: [
-              new EmbedBuilder()
-                .setTitle(`${client.username} left the game`)
-                .setColor([0, 255, 0]),
-            ],
-          });
-        }, (reason) => {
-          return interaction.editReply({
-            embeds: [
-              new EmbedBuilder()
-                .setTitle("Something wrong happened !")
-                .setDescription(`\`\`\`\n${reason}\n\`\`\``)
-                .setColor([255, 0, 0]),
-            ],
-          });
+      try {
+        mcClient.quit()
+        interaction.client.botUsers.delete(interaction.user.id);
+        return interaction.editReply({
+          embeds: [
+            new EmbedBuilder()
+              .setTitle(`${mcClient.username} left the game`)
+              .setColor([0, 255, 0]),
+          ],
         });
+      } catch (err) {
+        return interaction.editReply({
+          embeds: [
+            new EmbedBuilder()
+              .setTitle("Something wrong happened !")
+              .setDescription(`\`\`\`\n${err}\n\`\`\``)
+              .setColor([255, 0, 0]),
+          ],
+        });
+      }
     }
   },
 };
