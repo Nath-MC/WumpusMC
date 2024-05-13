@@ -23,6 +23,6 @@ module.exports = {
       position = client.player.entity.position.toArray().map((value) => parseInt(value)).join(" "); //Set position to the bot's ones 
     }
 
-    return reply(client, `${player ? `${player.username} is` : `I am`} currently at ${position} in ${client.game.dimension}.`, eventArgs[0]);
+    return client.utils.message(client, `${player ? `${player.username} is` : `I am`} currently at ${position} in ${client.game.dimension}.`, eventArgs[0]);
   },
 };

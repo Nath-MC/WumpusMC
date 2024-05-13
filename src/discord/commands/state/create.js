@@ -1,27 +1,13 @@
-const {
-  SlashCommandBuilder,
-  CommandInteraction,
-  EmbedBuilder,
-} = require("discord.js");
+const { SlashCommandBuilder, CommandInteraction, EmbedBuilder } = require("discord.js");
 const connectClient = require("../../../mineflayer/Client");
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("create")
     .setDescription("Create a new bot in the specified server")
-    .addStringOption((args) =>
-      args.setName("ip").setDescription("The server's ip").setRequired(true)
-    )
-    .addStringOption((args) =>
-      args.setName("username").setDescription("Bot's username")
-    )
-    .addNumberOption((args) =>
-      args
-        .setName("port")
-        .setDescription("The server's port")
-        .setMinValue(1024)
-        .setMaxValue(65535)
-    ),
+    .addStringOption((args) => args.setName("ip").setDescription("The server's ip").setRequired(true))
+    .addStringOption((args) => args.setName("username").setDescription("Bot's username"))
+    .addNumberOption((args) => args.setName("port").setDescription("The server's port").setMinValue(1024).setMaxValue(65535)),
 
   /**
    * @param {CommandInteraction} interaction
@@ -39,30 +25,18 @@ module.exports = {
     //Checking username
     if (!/^[a-zA-Z0-9_]{3,16}$/.test(username)) {
       return interaction.editReply({
-        embeds: [
-          new EmbedBuilder()
-            .setTitle("That is not a valid Minecraft username !")
-            .setColor([255, 0, 0]),
-        ],
+        embeds: [new EmbedBuilder().setTitle("That is not a valid Minecraft username !").setColor([255, 0, 0])],
       });
     }
 
     //Checking if the user had already started another bot
     if (interaction.client.botUsers.has(interaction.user.id)) {
       return interaction.editReply({
-        embeds: [
-          new EmbedBuilder()
-            .setTitle("Your bot is already online !")
-            .setColor([255, 0, 0]),
-        ],
+        embeds: [new EmbedBuilder().setTitle("Your bot is already online !").setColor([255, 0, 0])],
       });
     } else {
       interaction.editReply({
-        embeds: [
-          new EmbedBuilder()
-            .setTitle(`Hold on, ${username} is joining ${hostIp}:${hostPort}`)
-            .setColor([255, 255, 0]),
-        ],
+        embeds: [new EmbedBuilder().setTitle(`Hold on, ${username} is joining ${hostIp}:${hostPort}`).setColor([255, 255, 0])],
       });
 
       connectClient(hostIp, hostPort, username)
@@ -70,21 +44,12 @@ module.exports = {
           interaction.client.botUsers.set(interaction.user.id, client);
 
           interaction.editReply({
-            embeds: [
-              new EmbedBuilder()
-                .setTitle(`${username} joined the game`)
-                .setColor([0, 255, 0]),
-            ],
+            embeds: [new EmbedBuilder().setTitle(`${username} joined the game`).setColor([0, 255, 0])],
           });
         })
         .catch((reason) => {
           interaction.editReply({
-            embeds: [
-              new EmbedBuilder()
-                .setTitle("Something wrong happended !")
-                .setDescription(`\`\`\`\n${reason}\n\`\`\``)
-                .setColor([255, 0, 0]),
-            ],
+            embeds: [new EmbedBuilder().setTitle("Something wrong happended !").setDescription(`\`\`\`\n${reason}\n\`\`\``).setColor([255, 0, 0])],
           });
         });
     }

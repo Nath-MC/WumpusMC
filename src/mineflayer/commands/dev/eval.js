@@ -13,12 +13,7 @@ module.exports = {
    */
 
   execute(client, cmdArgs, eventArgs) {
-    if (cmdArgs.length > 1)
-      return client.utils.message(client, 
-        client,
-        "Only one expression can be evaluated at once.",
-        eventArgs[0]
-      );
+    if (cmdArgs.length > 1) return client.utils.message(client, client, "Only one expression can be evaluated at once.", eventArgs[0]);
 
     try {
       // Evaluate the expression
@@ -31,7 +26,7 @@ module.exports = {
       console.log(result);
       return client.utils.message(client, result, eventArgs[0]);
     } catch (err) {
-      console.log(err)
+      console.log(err);
       return client.utils.message(client, "An error occured: " + err.message, eventArgs[0]);
     }
   },

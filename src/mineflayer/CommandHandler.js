@@ -1,8 +1,6 @@
 const fs = require("node:fs");
 const path = require("node:path");
 
-console.log("Initializing the in-game command handler");
-
 const foldersPath = path.join(__dirname, "commands");
 const commandFolder = fs.readdirSync(foldersPath);
 
@@ -18,5 +16,4 @@ module.exports = (client) => {
       } else throw new Error(`${filePath} command is missing a property ! (name, description, args, execute)`);
     }
   }
-  console.log(`${client.commands.size} commands were registered`);
 };

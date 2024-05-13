@@ -1,5 +1,4 @@
 const mineflayer = require("mineflayer");
-const { message : reply } = require("../../Client");
 
 module.exports = {
     name : 'message',

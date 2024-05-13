@@ -8,11 +8,9 @@ const client = new Client({
   intents: [Guilds, GuildMessages, GuildMembers, DirectMessages],
 });
 
-console.log("Initializing collections")
 client.commands = new Collection();
 client.botUsers = new Collection();
 
-console.log("Initializing command and event handlers")
 require("./EventListener")(client);
 require("./CommandHandler")(client);
 

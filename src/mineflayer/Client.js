@@ -12,6 +12,7 @@ const CommandHandler = require("./CommandHandler");
 const pvp = require("mineflayer-pvp").plugin;
 const pvpArmorManager = require("mineflayer-armor-manager");
 const HawkEye = require("minecrafthawkeye");
+// const Socks = require("socks").SocksClient;
 // const Viewer = require("prismarine-viewer").mineflayer;
 
 let client;
@@ -22,10 +23,6 @@ let client;
  */
 
 function pluginLoader(client) {
-
-  console.log("Initializing plugins");
-  
-
   //Loading pathfinder
   client.loadPlugin(pathfinder);
   const defaultMove = new Movements(client);
@@ -38,7 +35,6 @@ function pluginLoader(client) {
   client.pathfinder.thinkTimeout = 10 * 1000;
 
   client.pathfinder.setMovements(defaultMove);
-
 
   //Loading pvp plugins
   client.loadPlugin(pvp);
@@ -64,24 +60,38 @@ function connectClient(hostIp, hostPort, botName) {
       .then(
         (result) => {
           //SUCCESS
-          console.log(`Ping successfull !\nInitalizing a bot as ${botName} on ${hostIp}:${hostPort} (${result.version.name})`);
+          console.log(`Success`);
 
           try {
             client = mineflayer.createBot({
+              username: botName,
               host: hostIp.toLowerCase(),
               port: hostPort,
-              username: botName || "WumpusMC",
               checkTimeoutInterval: 120 * 1000,
-              brand: "WumpusMC"
+              brand: "WumpusMC",
               // For now, the project don't support microsoft-based connections
             });
 
-            console.log("Initializing the client utils");
-            client.utils = {
-              message, updateGoal,
-            }
+            // client.connect(
+            //   Socks.createConnection({
+            //     proxy: {
+            //       host: "208.109.13.93",
+            //       port: 54461,
+            //       type: 5,
+            //     },
+            //     command: "connect",
+            //     destination: {
+            //       host: hostIp.toLowerCase(),
+            //       port: hostPort,
+            //     },
+            //   })
+            // );
 
-            console.log("Initializing the spawn/end listener");
+            client.utils = {
+              message,
+              updateGoal,
+            };
+
             client.once("spawn", () => {
               //Defining the property that will store all commands
               client.commands = new Map();
@@ -121,6 +131,7 @@ function connectClient(hostIp, hostPort, botName) {
         },
         (reason) => {
           //Either the Minecraft server was not one (or offline) or the ip refers to nothing
+          console.log("Fail");
 
           if (reason.code === "ETIMEDOUT") {
             return reject("Connection timed out, the host may not have responded.");
@@ -130,7 +141,7 @@ function connectClient(hostIp, hostPort, botName) {
             return reject("The connection has been refused, the server may be down or offline.");
           }
 
-          return reject(reason.code);
+          return reject(reason);
         }
       );
   });

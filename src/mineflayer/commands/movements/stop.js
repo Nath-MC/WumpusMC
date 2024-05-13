@@ -2,8 +2,8 @@ const mineflayer = require("mineflayer");
 
 module.exports = {
   name: "stop",
-  description : "Stopped the specified program",
-  args: "<\"all\" | \"attack\" | \"pathfinding\">",
+  description: "Stopped the specified program",
+  args: '<"all" | "attack" | "pathfinding">',
 
   /**
    *
@@ -24,10 +24,9 @@ module.exports = {
     } else if (cmdArgs[0] === "pathfinding") {
       client.pathfinder.stop();
       return client.utils.message(client, "Stopped pathfinding", eventArgs[0]); //Should trigger ./go.js:87 but doesn't ??
-
     }
-      
-      //See go.js:80
-      else return client.utils.message(client, "Invalid arguments were used, try using $stop for help", eventArgs[0]);
+
+    //See go.js:80
+    else return client.utils.message(client, "Invalid arguments were used, try using $stop for help", eventArgs[0]);
   },
 };
